@@ -1,0 +1,10 @@
+recursive-exclude models *
+recursive-exclude notebooks *
+recursive-exclude output *
+recursive-exclude .venv *
+recursive-exclude __pycache__ *
+prune models
+prune notebooks
+prune output
+prune .venv
+prune __pycache__

@@ -1,0 +1,1 @@
+# Serialization logic for MLOps consumption
