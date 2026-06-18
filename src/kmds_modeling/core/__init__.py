@@ -1,4 +1,5 @@
 from .path_coordinator import PathCoordinator
+from .model_advisor import ModelAdvisor
 from .notebook_utils import (
     build_notebook_resolver,
     get_modeling_artifact_paths,
@@ -9,6 +10,7 @@ from .notebook_utils import (
 
 __all__ = [
     "PathCoordinator",
+    "ModelAdvisor",
     "build_notebook_resolver",
     "get_modeling_artifact_paths",
     "load_model_ready_dataset",

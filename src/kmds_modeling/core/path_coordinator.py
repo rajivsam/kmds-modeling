@@ -46,6 +46,14 @@ class PathCoordinator:
         return self._resolve_workspace_dir(self.modeling_output_dir)
 
     @property
+    def workspace_documents_path(self) -> str:
+        return os.path.join(self.working_dir, "documents")
+
+    @property
+    def modeling_recommendations_path(self) -> str:
+        return os.path.join(self.workspace_documents_path, "modeling_recommendations")
+
+    @property
     def model_ready_dataset_path(self) -> str:
         return os.path.join(self.featurization_output_path, self.model_ready_data_file)
 
