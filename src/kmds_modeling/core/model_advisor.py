@@ -121,7 +121,7 @@ class ModelAdvisor:
         )
 
     def recommendation_storage_path(self) -> str:
-        return self.path_coordinator.modeling_recommendations_path
+        return self.path_coordinator.modeling_contracts_path
 
     def _classification_recommendation(self, profile: Dict[str, Any]) -> Dict[str, Any]:
         if profile.get("target_cardinality", 0) > 20:
@@ -237,7 +237,7 @@ class ModelAdvisor:
             "graph_modeling": "graph_modeling_recommendations.md",
             "clustering": "clustering_recommendations.md",
         }.get(topic, "modeling_recommendations.md")
-        return os.path.join(self.path_coordinator.modeling_recommendations_path, target_file)
+        return os.path.join(self.path_coordinator.modeling_contracts_path, target_file)
 
     @staticmethod
     def _count_id_like_columns(columns: List[str]) -> int:

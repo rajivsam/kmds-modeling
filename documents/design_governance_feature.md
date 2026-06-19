@@ -145,7 +145,7 @@ To ensure high developer adoption, the Python package runtime must execute with 
 
 This advisory output is intended to live inside the KMDS workspace under `working_dir/documents`, where `working_dir` is the installed project root provided in `model_config.yaml`.
 
-The package should use the `PathCoordinator` abstraction for all workspace path resolution so that the KMDS project layout is established once the working directory is known. In practice, this means the advisor or runtime helper functions should resolve recommendation storage through `PathCoordinator.modeling_recommendations_path` rather than hardcoding package-local paths.
+The package should use the `PathCoordinator` abstraction for all workspace path resolution so that the KMDS project layout is established once the working directory is known. In practice, this means the advisor or runtime helper functions should resolve recommendation storage through `PathCoordinator.modeling_contracts_path` rather than hardcoding package-local paths.
 
 Currently, the runtime supports classification and regression task execution via dedicated task modules. Graph-based analysis and clustering are supported as advisory task paths, with separate runtime modules prepared for future implementation.
 

@@ -151,6 +151,122 @@ class TestTaskRunners(unittest.TestCase):
         with self.assertRaises(ValueError):
             ModelAdvisor(str(config_path))
 
+    def test_model_advisor_classification_buckets(self):
+        config = {
+            "data": {
+                "working_dir": str(self.working_dir),
+                "index_column": "record_id",
+            },
+            "project": {
+                "name": "advisor_experiment",
+                "experiment_version": "0.1.0",
+                "target_variable": "loan_status_r",
+                "task_type": "TABULAR_CLASSIFICATION",
+            },
+        }
+        config_path = self._write_config(config)
+        advisor = ModelAdvisor(str(config_path))
+
+        df_mild = pd.DataFrame({
+            "record_id": list(range(20)),
+            "loan_status_r": [0] * 16 + [1] * 4,
+        })
+        profile_mild = advisor.profile_data(df_mild, target="loan_status_r")
+        rec_mild = advisor.get_recommendation(profile_mild, "TABULAR_CLASSIFICATION")
+        self.assertEqual(rec_mild["bucket"], 1)
+        self.assertIn("Stratified", rec_mild["strategy"])
+
+        df_moderate = pd.DataFrame({
+            "record_id": list(range(50)),
+            "loan_status_r": [0] * 46 + [1] * 4,
+        })
+        profile_moderate = advisor.profile_data(df_moderate, target="loan_status_r")
+        rec_moderate = advisor.get_recommendation(profile_moderate, "TABULAR_CLASSIFICATION")
+        self.assertEqual(rec_moderate["bucket"], 2)
+        self.assertIn("Cost-Sensitive", rec_moderate["strategy"])
+
+        df_extreme = pd.DataFrame({
+            "record_id": list(range(101)),
+            "loan_status_r": [0] * 100 + [1],
+        })
+        profile_extreme = advisor.profile_data(df_extreme, target="loan_status_r")
+        rec_extreme = advisor.get_recommendation(profile_extreme, "TABULAR_CLASSIFICATION")
+        self.assertEqual(rec_extreme["bucket"], 3)
+        self.assertIn("Anomaly", rec_extreme["strategy"])
+
+    def test_model_advisor_out_of_scope_for_high_cardinality(self):
+        config = {
+            "data": {
+                "working_dir": str(self.working_dir),
+                "index_column": "record_id",
+            },
+            "project": {
+                "name": "advisor_experiment",
+                "experiment_version": "0.1.0",
+                "target_variable": "loan_status_r",
+                "task_type": "TABULAR_CLASSIFICATION",
+            },
+        }
+        config_path = self._write_config(config)
+        advisor = ModelAdvisor(str(config_path))
+
+        df = pd.DataFrame({
+            "record_id": list(range(25)),
+            "loan_status_r": list(range(25)),
+        })
+        profile = advisor.profile_data(df, target="loan_status_r")
+        rec = advisor.get_recommendation(profile, "TABULAR_CLASSIFICATION")
+        self.assertEqual(rec["status"], "OUT_OF_SCOPE")
+
+    def test_model_advisor_graph_and_clustering_references(self):
+        config = {
+            "data": {
+                "working_dir": str(self.working_dir),
+                "index_column": "record_id",
+            },
+            "project": {
+                "name": "advisor_experiment",
+                "experiment_version": "0.1.0",
+                "target_variable": "loan_status_r",
+                "task_type": "TABULAR_CLASSIFICATION",
+            },
+        }
+        config_path = self._write_config(config)
+        advisor = ModelAdvisor(str(config_path))
+
+        df = pd.DataFrame({
+            "record_id": list(range(10)),
+            "loan_status_r": [0, 1] * 5,
+        })
+        profile = advisor.profile_data(df, target="loan_status_r")
+
+        graph_rec = advisor.get_recommendation(profile, "GRAPH_NODE_CLASSIFICATION")
+        self.assertEqual(graph_rec["status"], "SUCCESS")
+        self.assertIn("graph_modeling", graph_rec["reference"])
+
+        clustering_rec = advisor.get_recommendation(profile, "CLUSTERING")
+        self.assertEqual(clustering_rec["status"], "SUCCESS")
+        self.assertIn("clustering_recommendations", clustering_rec["reference"])
+
+    def test_model_advisor_storage_path_uses_modeling_contracts(self):
+        config = {
+            "data": {
+                "working_dir": str(self.working_dir),
+                "index_column": "record_id",
+            },
+            "project": {
+                "name": "advisor_experiment",
+                "experiment_version": "0.1.0",
+                "target_variable": "loan_status_r",
+                "task_type": "TABULAR_CLASSIFICATION",
+            },
+        }
+        config_path = self._write_config(config)
+        advisor = ModelAdvisor(str(config_path))
+
+        path = advisor.recommendation_storage_path()
+        self.assertTrue(path.endswith("documents/modeling_contracts"))
+
 
 if __name__ == "__main__":
     unittest.main()

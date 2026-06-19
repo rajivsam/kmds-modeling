@@ -11,7 +11,7 @@ class DesignAdvisor:
     - Supports advisory guidance for Classification, Regression, Graph-based Analysis, and Clustering.
     - Classification and Regression are currently supported in runtime evaluation.
     - Graph and Clustering remain advisory-only paths for future runtime support.
-    - Recommendations are documented in the workspace `documents/modeling_recommendations/` path.
+    - Recommendations are documented in the workspace `documents/modeling_contracts/` path.
     """
     def __init__(self):
         self.intents = {

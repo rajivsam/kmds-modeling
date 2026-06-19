@@ -5,6 +5,7 @@ This file summarizes the current state of the `kmds-modeling` repo for a Copilot
 
 ## Current Repo State
 - The installable package lives under `src/kmds_modeling/`.
+- Current package version: `0.2.1`.
 - `src/kmds_modeling/core/base.py` defines abstract interfaces:
   - `BaseFeatureTransformer`
   - `BaseModelCandidate`
@@ -70,10 +71,11 @@ This file summarizes the current state of the `kmds-modeling` repo for a Copilot
 4. Keep the existing no-leakage transformer contract and index preservation intact.
 
 ## Recommendations Documents
-- `documents/modeling_recommendations/tabular_classification_recommendations.md`
-- `documents/modeling_recommendations/tabular_regression_recommendations.md`
-- `documents/modeling_recommendations/graph_modeling_recommendations.md`
-- `documents/modeling_recommendations/clustering_recommendations.md`
+- `documents/modeling_contracts/tabular_classification_recommendations.md`
+- `documents/modeling_contracts/tabular_regression_recommendations.md`
+- `documents/modeling_contracts/graph_modeling_recommendations.md`
+- `documents/modeling_contracts/clustering_recommendations.md`
+- `documents/modeling_contracts/README.md`
 
 ## Key File Locations
 - `documents/design_governance_feature.md` — governance concept and rule sets
@@ -81,7 +83,7 @@ This file summarizes the current state of the `kmds-modeling` repo for a Copilot
 - `src/kmds_modeling/core/runner.py` — evaluation and export orchestration
 
 ## Workspace Recommendation Path
-- Runtime recommendations should be written to `working_dir/documents/modeling_recommendations/` in the consuming KMDS workspace, not to the package repo `documents/` directory.
+- Runtime recommendations should be written to `working_dir/documents/modeling_contracts/` in the consuming KMDS workspace, not to the package repo `documents/` directory.
 - The package should expose this path through `PathCoordinator` so the runtime can resolve it reliably from `model_config.yaml`.
 - `src/kmds_modeling/core/base.py` — transformer / candidate interface
 - `src/kmds_modeling/core/path_coordinator.py` — KMDS path resolution

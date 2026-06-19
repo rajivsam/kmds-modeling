@@ -50,8 +50,13 @@ class PathCoordinator:
         return os.path.join(self.working_dir, "documents")
 
     @property
+    def modeling_contracts_path(self) -> str:
+        return os.path.join(self.workspace_documents_path, "modeling_contracts")
+
+    @property
     def modeling_recommendations_path(self) -> str:
-        return os.path.join(self.workspace_documents_path, "modeling_recommendations")
+        # Legacy alias for backwards compatibility
+        return self.modeling_contracts_path
 
     @property
     def model_ready_dataset_path(self) -> str:

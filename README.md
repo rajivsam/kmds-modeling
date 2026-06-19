@@ -1,6 +1,6 @@
 # KMDS Modeling
 
-`kmds-modeling` is a lightweight supporting package for KMDS modeling workflows. It provides the runtime plumbing, evaluation orchestration, and artifact export utilities needed to bridge KMDS feature outputs and production-ready model assets.
+`kmds-modeling` is a lightweight supporting package for KMDS modeling workflows. It provides the runtime plumbing, evaluation orchestration, artifact export utilities, and modeling contract documentation needed to bridge KMDS feature outputs and production-ready model assets.
 
 ## Overview
 - Supports KMDS workspace modeling without embedding domain-specific business logic.
@@ -9,11 +9,12 @@
 - Keeps workspace-specific examples and artifacts outside the installable package.
 
 ## Key Features
-- Config-driven modeling pipeline via `modeling_config.yaml`
+- Config-driven modeling pipeline via YAML configuration files (e.g. `model_config.yaml`)
 - Safe cross-validation with fold-specific transformer fitting
 - Uniform candidate wrapper support for any model implementation
 - Export of serialized model weights, feature pipeline, and metadata
 - Path coordination for KMDS workspace layout handling
+- Task contract documentation under `documents/modeling_contracts/`
 
 ## Installation
 ```bash
@@ -30,13 +31,13 @@ kmds-modeling export --config /path/to/modeling_config.yaml
 
 ## Configuration
 The package expects a YAML configuration file that defines:
-- `project` settings such as name, version, and target variable
-- `data` settings including working directory and index column
+- `project` settings such as name, version, task type, and target variable
+- `data` settings including working directory, index column, and featurization paths
 - `experiment_settings` for cross-validation and metrics
 - `candidates` listing candidate models and their hyperparameters
 - `production_target` for champion export paths
 
-The `PathCoordinator` resolves workspace-relative paths and ensures the package operates on KMDS-generated modeling artifacts.
+The `PathCoordinator` resolves workspace-relative paths, including `documents/modeling_contracts/`, and ensures the package operates on KMDS-generated modeling artifacts.
 
 ## Recommended Workflow
 1. Generate feature-engineered data with KMDS upstream tools such as `kmds-featurization`.
@@ -50,6 +51,7 @@ The `PathCoordinator` resolves workspace-relative paths and ensures the package 
 - `src/kmds_modeling/core/runner.py` — evaluation and export orchestration
 - `src/kmds_modeling/core/path_coordinator.py` — workspace path resolution
 - `src/kmds_modeling/core/notebook_utils.py` — notebook-friendly utilities
+- `documents/modeling_contracts/` — task contract documentation for KMDS modeling
 
 ## Contribution Notes
 - Keep core modeling logic generic and focused on KMDS pipeline support.
