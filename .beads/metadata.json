@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "kmds_modeling",
+  "project_id": "5430dc42-60bd-4929-bc38-9a3bb826777d"
+}
