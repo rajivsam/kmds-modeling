@@ -46,6 +46,35 @@ Placeholder runners exist for:
 - `GRAPH_DISCOVERY`
 - `CLUSTERING`
 
+### Modeling Advisor
+A core capability of this package is the independent modeling advisor service.
+
+Use `ModelAdvisor` to profile workspace data and receive structured guidance before selecting a runtime task or training strategy.
+
+Example usage:
+```python
+from kmds_modeling.core import ModelAdvisor
+import pandas as pd
+
+advisor = ModelAdvisor("/path/to/model_config.yaml")
+df = pd.read_csv("/path/to/working_dir/data/featurization/model_ready_numeric_data.csv")
+profile = advisor.profile_data(df, target="loan_status_r", entities=["borrower_id"])
+recommendation = advisor.get_recommendation(profile, "TABULAR_CLASSIFICATION", priority="MAX_ACCURACY")
+print(recommendation)
+```
+
+The advisor also exposes a workspace-aware output location:
+```python
+print(advisor.recommendation_storage_path())
+```
+
+This path resolves to `working_dir/documents/modeling_contracts/`, where governance reference documents and blueprints live.
+
+### When to use the advisor
+- Run the advisor before selecting a candidate architecture or training path.
+- Use its profile-based recommendations to choose between Tabular Classification, Tabular Regression, Graph, or Clustering.
+- Treat the output as a structured guidance layer, not a mandatory runtime enforcement step.
+
 ### Task Comparison
 | Feature | TABULAR_CLASSIFICATION | TABULAR_REGRESSION |
 |---|---|---|
