@@ -21,6 +21,32 @@
 pip install kmds-modeling
 ```
 
+## Package discovery
+Clients can discover runtime metadata using the package API or import installed package metadata.
+
+```python
+from kmds_modeling import get_package_info
+
+info = get_package_info()
+print(info)
+```
+
+The discovery payload includes standard fields used across KMDS packages:
+- `package_name`
+- `version`
+- `entry_points`
+- `cli_commands`
+- `provided_packages`
+- `documentation_note`
+
+When installed, the package can also be resolved via `importlib.metadata`:
+
+```python
+from importlib.metadata import version
+
+print(version("kmds-modeling"))
+```
+
 ## CLI
 The package exposes a command-line interface for model evaluation and export.
 

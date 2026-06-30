@@ -10,6 +10,7 @@ SRC = ROOT / "src"
 sys.path.insert(0, str(SRC))
 
 import pandas as pd
+from kmds_modeling import get_package_info
 from kmds_modeling.core.runner import ExperimentRunner
 from kmds_modeling.core.model_advisor import ModelAdvisor
 
@@ -266,6 +267,15 @@ class TestTaskRunners(unittest.TestCase):
 
         path = advisor.recommendation_storage_path()
         self.assertTrue(path.endswith("documents/modeling_contracts"))
+
+    def test_get_package_info_returns_metadata(self):
+        info = get_package_info()
+        self.assertIsInstance(info, dict)
+        self.assertEqual(info.get("package_name"), "kmds-modeling")
+        self.assertIn("version", info)
+        self.assertIn("entry_points", info)
+        self.assertIn("cli_commands", info)
+        self.assertIn("provided_packages", info)
 
 
 if __name__ == "__main__":
