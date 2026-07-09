@@ -37,6 +37,19 @@ This file summarizes the current state of the `kmds-modeling` repo for a Copilot
 - `task_graph.py` and `task_clustering.py` currently raise `NotImplementedError` for runtime evaluation and export.
 - The graph path is intentionally isolated so it can later map `dd-parser-cleaner` metadata into PyG/DGL node/edge objects from the KMDS workspace layout.
 
+## New Spec Discovery API
+- `get_package_info()` remains the package discovery API for clients.
+- `build_model_spec()` now generates a validated `model_config.yaml` from a minimal requirements payload.
+- `ModelGuidanceSpec` returns:
+  - `config`
+  - `task_contract`
+  - `guidance`
+  - `reference_docs`
+  - `clarification_questions`
+- `get_available_guidance_templates()` lists supported guidance templates such as `tabular_classification` and `sba`.
+- New guidance and workflow documentation are in `documents/client_discovery_of_package_services.md`.
+- Example notebook workflow is available in `notebooks/model_spec_workflow.ipynb`.
+
 ## Validation Status
 - Regression tests for the SBA classifier path passed successfully.
 

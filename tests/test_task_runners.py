@@ -10,7 +10,7 @@ SRC = ROOT / "src"
 sys.path.insert(0, str(SRC))
 
 import pandas as pd
-from kmds_modeling import get_package_info
+from kmds_modeling import get_package_info, get_supported_task_types
 from kmds_modeling.core.runner import ExperimentRunner
 from kmds_modeling.core.model_advisor import ModelAdvisor
 
@@ -276,6 +276,8 @@ class TestTaskRunners(unittest.TestCase):
         self.assertIn("entry_points", info)
         self.assertIn("cli_commands", info)
         self.assertIn("provided_packages", info)
+        self.assertIn("supported_models", info)
+        self.assertEqual(info.get("supported_models"), get_supported_task_types())
 
 
 if __name__ == "__main__":

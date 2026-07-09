@@ -9,6 +9,9 @@ project:
   name: "sba_modeling_experiment"
   experiment_version: "0.1.0"
   target_variable: "loan_status_r"
+  task_type: "TABULAR_CLASSIFICATION"
+  strategy: "MAX_ACCURACY"
+  user_intent: "Imbalanced SBA loan status classification"
 
 experiment_settings:
   cross_validation:
@@ -24,12 +27,15 @@ candidates:
       n_estimators: 100
       learning_rate: 0.1
       max_depth: 3
+      random_state: 42
   - name: "random_forest"
     class_path: "kmds_modeling.sba.candidates.RandomForestCandidate"
     hyperparameters:
       n_estimators: 100
       max_depth: 8
+      random_state: 42
+      class_weight: balanced_subsample
 
 production_target:
-  champion_candidate_name: "gradient_boosting"
+  champion_candidate_name: "random_forest"
   export_directory: "output/mlops_bundle"

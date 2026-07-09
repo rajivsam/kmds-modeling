@@ -1,6 +1,8 @@
 from importlib.metadata import PackageNotFoundError, version
 from typing import Any, Dict, List
 
+from .core.model_spec import get_supported_task_types
+
 PACKAGE_NAME = "kmds-modeling"
 CLI_COMMANDS = ["evaluate", "export"]
 ENTRY_POINTS = {
@@ -30,6 +32,7 @@ def get_package_info() -> Dict[str, Any]:
         "entry_points": ENTRY_POINTS,
         "cli_commands": get_cli_command_names(),
         "provided_packages": PROVIDED_PACKAGES,
+        "supported_models": get_supported_task_types(),
         "documentation_note": (
             "This package does not ship embedded documents in the installed distribution. "
             "Use the repository top-level documents/ folder for onboarding and implementation guidance."
