@@ -39,6 +39,40 @@ The discovery payload includes standard fields used across KMDS packages:
 - `provided_packages`
 - `documentation_note`
 
+This package publishes the `kmds-modeling` console script entry point as:
+- `kmds-modeling = "kmds_modeling.cli:cli"`
+
+Clients can inspect the loaded entry points at runtime using the package metadata:
+
+```python
+from kmds_modeling import get_package_info
+
+info = get_package_info()
+print(info["entry_points"])
+print(info["cli_commands"])
+```
+
+The package also exposes a spec discovery API for building a validated modeling configuration from minimal instructions.
+
+```python
+from kmds_modeling import get_spec_questions, build_model_spec
+
+requirements = {
+    "project": {"task_type": "TABULAR_CLASSIFICATION"},
+    "data": {"working_dir": "."},
+}
+
+questions = get_spec_questions(requirements)
+print(questions)
+
+# After supplying answers to the spec questions,
+# build the final model config and write it to YAML.
+spec = build_model_spec(requirements)
+spec.to_yaml("model_config.yaml")
+```
+
+When the client provides modeling instructions that answer the required spec questions, this package can build the model spec and run the evaluation/export workflow to produce model artifacts.
+
 When installed, the package can also be resolved via `importlib.metadata`:
 
 ```python
@@ -64,6 +98,50 @@ The package expects a YAML configuration file that defines:
 - `production_target` for champion export paths
 
 The `PathCoordinator` resolves workspace-relative paths, including `documents/modeling_contracts/`, and ensures the package operates on KMDS-generated modeling artifacts.
+
+## Spec discovery and build
+Clients can use the package's spec discovery API to ask what configuration items are still required and then build a complete `model_config.yaml`.
+
+```python
+from kmds_modeling import get_spec_questions, build_model_spec
+
+requirements = {
+    "project": {
+        "task_type": "TABULAR_CLASSIFICATION",
+        "target_variable": "label",
+        "user_intent": "Predict the probability of the positive class for business interventions.",
+    },
+    "data": {
+        "working_dir": ".",
+    },
+}
+
+questions = get_spec_questions(requirements)
+for question in questions:
+    print(question["field"], question["question"])
+
+# Supply the remaining answers and build the final model spec.
+requirements.update({
+    "project": {
+        **requirements["project"],
+        "name": "customer_churn_classifier",
+        "strategy": "MAX_ACCURACY",
+    },
+    "candidates": [
+        {
+            "name": "random_forest",
+            "class_path": "my_models.RandomForestCandidate",
+            "hyperparameters": {"n_estimators": 100},
+        }
+    ],
+    "production_target": {"champion_candidate_name": "random_forest"},
+})
+
+spec = build_model_spec(requirements)
+spec.to_yaml("model_config.yaml")
+```
+
+When modeling instructions cover the returned spec questions, this package can build the model spec and then run the evaluation/export workflow to produce model artifacts.
 
 ## Recommended Workflow
 1. Generate feature-engineered data with KMDS upstream tools such as `kmds-featurization`.

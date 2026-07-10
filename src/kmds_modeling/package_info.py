@@ -33,6 +33,20 @@ def get_package_info() -> Dict[str, Any]:
         "cli_commands": get_cli_command_names(),
         "provided_packages": PROVIDED_PACKAGES,
         "supported_models": get_supported_task_types(),
+        "data_contract": {
+            "model_ready_data_file": "model_ready_numeric_data.csv",
+            "featurization_output_dir": "featurization",
+            "default_model_ready_dataset_path": "data/featurization/model_ready_numeric_data.csv",
+            "modeling_output_dir": "models",
+            "note": (
+                "This package assumes modeling input is produced to `data/featurization/` under the workspace working_dir. "
+                "Featurization workflows should write outputs there for modeling to consume."
+            ),
+        },
+        "spec_discovery_note": (
+            "Agents can discover task-specific required config by calling `get_spec_questions()` and building the model spec from those answers. "
+            "Human users should make sure their design/prompt covers those questions before asking an agent to build a model."
+        ),
         "documentation_note": (
             "This package does not ship embedded documents in the installed distribution. "
             "Use the repository top-level documents/ folder for onboarding and implementation guidance."

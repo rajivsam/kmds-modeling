@@ -2,14 +2,19 @@ import click
 from .core.runner import ExperimentRunner
 
 
-@click.group()
+@click.group(help="KMDS Modeling CLI. Requires a workspace config whose featurization data lives under data/featurization/.")
 def cli():
     """KMDS Modeling CLI."""
     pass
 
 
-@cli.command()
-@click.option("--config", required=True, type=click.Path(exists=True), help="Path to modeling_config.yaml")
+@cli.command(help="Run model evaluation for configured candidates. The config should reference a workspace with `data/featurization/model_ready_numeric_data.csv`.")
+@click.option(
+    "--config",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to modeling_config.yaml. This package expects featurization output under data/featurization/ in the workspace.",
+)
 def evaluate(config):
     """Run model evaluation for configured candidates."""
     runner = ExperimentRunner(config)
@@ -19,8 +24,13 @@ def evaluate(config):
     click.echo(df.to_string(index=False))
 
 
-@cli.command()
-@click.option("--config", required=True, type=click.Path(exists=True), help="Path to modeling_config.yaml")
+@cli.command(help="Export the selected champion model using the configured production target. Model inputs are expected from data/featurization/.")
+@click.option(
+    "--config",
+    required=True,
+    type=click.Path(exists=True),
+    help="Path to modeling_config.yaml. This package expects featurization output under data/featurization/ in the workspace.",
+)
 def export(config):
     """Export the selected champion model using the configured production target."""
     runner = ExperimentRunner(config)

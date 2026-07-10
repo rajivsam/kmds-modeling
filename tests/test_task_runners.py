@@ -277,7 +277,14 @@ class TestTaskRunners(unittest.TestCase):
         self.assertIn("cli_commands", info)
         self.assertIn("provided_packages", info)
         self.assertIn("supported_models", info)
+        self.assertIn("data_contract", info)
         self.assertEqual(info.get("supported_models"), get_supported_task_types())
+        self.assertEqual(info["data_contract"].get("model_ready_data_file"), "model_ready_numeric_data.csv")
+        self.assertEqual(info["data_contract"].get("featurization_output_dir"), "featurization")
+        self.assertEqual(
+            info["data_contract"].get("default_model_ready_dataset_path"),
+            "data/featurization/model_ready_numeric_data.csv",
+        )
 
 
 if __name__ == "__main__":
