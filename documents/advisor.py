@@ -8,15 +8,16 @@ class DesignAdvisor:
 
     Current scope:
     - Advisory-only module; runtime integration is separate.
-    - Supports advisory guidance for Classification, Regression, Graph-based Analysis, and Clustering.
+    - Supports advisory guidance for Classification, Regression, Survival Analysis, Graph-based Analysis, and Clustering.
     - Classification and Regression are currently supported in runtime evaluation.
-    - Graph and Clustering remain advisory-only paths for future runtime support.
+    - Graph, Clustering, and Survival Analysis remain advisory-only paths for future runtime support.
     - Recommendations are documented in the workspace `documents/modeling_contracts/` path.
     """
     def __init__(self):
         self.intents = {
             "TABULAR_CLASSIFICATION": "Standard classification (e.g., Is this loan good or bad?).",
             "TABULAR_REGRESSION": "Standard regression (e.g., What is the expected loss amount?).",
+            "SURVIVAL_ANALYSIS": "Time-to-event survival analysis using Kaplan-Meier curves or Cox models.",
             "GRAPH_NODE_CLASSIFICATION": "Predicting a category for an entity based on its connections.",
             "GRAPH_NODE_REGRESSION": "Predicting a value for an entity based on its connections.",
             "GRAPH_DISCOVERY": "Unsupervised discovery of links or communities.",

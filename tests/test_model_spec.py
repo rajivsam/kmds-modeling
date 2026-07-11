@@ -9,7 +9,7 @@ SRC = ROOT / "src"
 sys.path.insert(0, str(SRC))
 
 import pandas as pd
-from kmds_modeling import build_model_spec
+from kmds_modeling import build_model_spec, get_available_guidance_templates, get_supported_task_types
 
 
 class TestModelSpec(unittest.TestCase):
@@ -90,9 +90,36 @@ class TestModelSpec(unittest.TestCase):
         spec.to_yaml(str(output_path))
         self.assertTrue(output_path.exists())
 
-    def test_available_guidance_templates(self):
-        from kmds_modeling import get_available_guidance_templates
+    def test_survival_analysis_guidance_template(self):
+        requirements = {
+            "project": {
+                "name": "survival_experiment",
+                "experiment_version": "0.1.0",
+                "task_type": "SURVIVAL_ANALYSIS",
+                "strategy": "MAX_SURVIVAL_INSIGHT",
+                "user_intent": "Estimate time to churn using survival curves",
+                "duration_variable": "time_to_event",
+                "event_variable": "event_occurred",
+            },
+            "data": {
+                "working_dir": str(self.working_dir),
+            },
+            "candidates": [],
+            "production_target": {},
+        }
 
+        spec = build_model_spec(
+            requirements=requirements,
+            guidance_templates=["survival_analysis"],
+        )
+
+        self.assertEqual(spec.config["project"]["task_type"], "SURVIVAL_ANALYSIS")
+        self.assertIn("documents/modeling_contracts/survival_recommendations.md", spec.reference_docs)
+        self.assertIn("Fit Kaplan-Meier curves", " ".join(spec.guidance["details"]))
+
+    def test_available_guidance_templates(self):
         templates = get_available_guidance_templates()
         self.assertIn("tabular_classification", templates)
         self.assertIn("sba", templates)
+        self.assertIn("survival_analysis", templates)
+        self.assertIn("SURVIVAL_ANALYSIS", get_supported_task_types())

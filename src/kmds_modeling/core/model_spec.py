@@ -67,6 +67,33 @@ TASK_CONTRACTS = {
             "preserve DataFrame index",
         ],
     },
+    "SURVIVAL_ANALYSIS": {
+        "task_type": "SURVIVAL_ANALYSIS",
+        "required_project_fields": [
+            "name",
+            "experiment_version",
+            "duration_variable",
+            "event_variable",
+            "task_type",
+            "strategy",
+            "user_intent",
+        ],
+        "required_data_fields": [
+            "working_dir",
+            "model_ready_data_file",
+            "featurization_output_dir",
+            "modeling_output_dir",
+        ],
+        "candidate_interface": [
+            "fit(X_train, durations, event_observed)",
+            "predict_survival_function(X) -> survival curves",
+        ],
+        "transformer_interface": [
+            "fit(X_train, durations, event_observed)",
+            "transform(X_val)",
+            "preserve DataFrame index",
+        ],
+    },
 }
 
 GUIDANCE_TEMPLATES = {
@@ -91,11 +118,22 @@ GUIDANCE_TEMPLATES = {
         ],
         "reference_doc": "documents/sba_modeling_requirements.md",
     },
+    "survival_analysis": {
+        "summary": "Use Kaplan-Meier survival curves and a survival analysis library such as lifelines to model time-to-event outcomes.",
+        "details": [
+            "Use `project.task_type = SURVIVAL_ANALYSIS`.",
+            "Provide `project.duration_variable` and `project.event_variable` for censoring-aware modeling.",
+            "Fit Kaplan-Meier curves using a package like `lifelines` to estimate survival functions.",
+            "Generate survival plots and export survival function estimates as part of the champion workflow.",
+        ],
+        "reference_doc": "documents/modeling_contracts/survival_recommendations.md",
+    },
 }
 
 STRATEGY_OPTIONS = {
     "TABULAR_CLASSIFICATION": ["MAX_ACCURACY", "HIGH_INTERPRETABILITY"],
     "TABULAR_REGRESSION": ["MAX_ACCURACY", "HIGH_INTERPRETABILITY"],
+    "SURVIVAL_ANALYSIS": ["MAX_SURVIVAL_INSIGHT", "HIGH_INTERPRETABILITY"],
 }
 
 
@@ -132,7 +170,24 @@ def get_spec_questions(requirements: Dict[str, Any]) -> List[Dict[str, Any]]:
             }
         )
 
-    if not project_cfg.get("target_variable"):
+    if project_cfg.get("task_type") == "SURVIVAL_ANALYSIS":
+        if not project_cfg.get("duration_variable"):
+            questions.append(
+                {
+                    "field": "project.duration_variable",
+                    "question": "What is the duration/time-to-event variable column name?",
+                    "note": "This field captures the survival time or censoring duration.",
+                }
+            )
+        if not project_cfg.get("event_variable"):
+            questions.append(
+                {
+                    "field": "project.event_variable",
+                    "question": "What is the event-observed indicator column name?",
+                    "note": "This boolean or binary field indicates whether the event of interest occurred.",
+                }
+            )
+    elif not project_cfg.get("target_variable"):
         questions.append(
             {
                 "field": "project.target_variable",
@@ -256,6 +311,13 @@ def _build_clarification_questions(config: Dict[str, Any], task_contract: Dict[s
     if task_contract["task_type"] == "TABULAR_CLASSIFICATION":
         if config["experiment_settings"].get("primary_metric") is None:
             questions.append("Confirm the primary metric for classification evaluation (for example, roc_auc).")
+    if task_contract["task_type"] == "SURVIVAL_ANALYSIS":
+        if config["project"].get("duration_variable") is None:
+            questions.append("Provide the duration/time-to-event variable for survival analysis.")
+        if config["project"].get("event_variable") is None:
+            questions.append("Provide the event-observed indicator variable for survival analysis.")
+        if config["experiment_settings"].get("primary_metric") is None:
+            questions.append("Confirm the primary survival metric (for example, concordance_index).")
     return questions
 
 

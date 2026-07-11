@@ -12,6 +12,7 @@ class ModelAdvisor:
     SUPPORTED_TASKS = [
         "TABULAR_CLASSIFICATION",
         "TABULAR_REGRESSION",
+        "SURVIVAL_ANALYSIS",
         "GRAPH_NODE_CLASSIFICATION",
         "GRAPH_NODE_REGRESSION",
         "GRAPH_DISCOVERY",
@@ -21,6 +22,7 @@ class ModelAdvisor:
     DEFAULT_INTENTS = {
         "TABULAR_CLASSIFICATION": "Standard classification (e.g., Is this loan good or bad?).",
         "TABULAR_REGRESSION": "Standard regression (e.g., What is the expected loss amount?).",
+        "SURVIVAL_ANALYSIS": "Time-to-event survival analysis using Kaplan-Meier or other survival models.",
         "GRAPH_NODE_CLASSIFICATION": "Predicting a category for an entity based on its connections.",
         "GRAPH_NODE_REGRESSION": "Predicting a value for an entity based on its connections.",
         "GRAPH_DISCOVERY": "Unsupervised discovery of links or communities.",
@@ -69,6 +71,8 @@ class ModelAdvisor:
             return self._classification_recommendation(profile)
         if user_intent == "TABULAR_REGRESSION":
             return self._regression_recommendation(profile, priority)
+        if user_intent == "SURVIVAL_ANALYSIS":
+            return self._survival_recommendation(profile, priority)
         if user_intent.startswith("GRAPH_"):
             return self._graph_recommendation(profile, user_intent, priority)
         if user_intent == "CLUSTERING":
@@ -187,6 +191,19 @@ class ModelAdvisor:
             "reference": self._document_reference("tabular_regression"),
         }
 
+    def _survival_recommendation(self, profile: Dict[str, Any], priority: str) -> Dict[str, Any]:
+        return {
+            "status": "SUCCESS",
+            "pillar": "E",
+            "strategy": "Survival Analysis",
+            "guidance": (
+                "Use Kaplan-Meier survival curves for time-to-event analysis. "
+                "A package like `lifelines` is recommended to fit survival functions and plot survival curves. "
+                "Provide `duration_variable` and `event_variable` in the project configuration."
+            ),
+            "reference": self._document_reference("survival_analysis"),
+        }
+
     def _graph_recommendation(
         self,
         profile: Dict[str, Any],
@@ -234,6 +251,7 @@ class ModelAdvisor:
         target_file = {
             "tabular_classification": "tabular_classification_recommendations.md",
             "tabular_regression": "tabular_regression_recommendations.md",
+            "survival_analysis": "survival_recommendations.md",
             "graph_modeling": "graph_modeling_recommendations.md",
             "clustering": "clustering_recommendations.md",
         }.get(topic, "modeling_recommendations.md")

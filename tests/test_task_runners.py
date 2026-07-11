@@ -249,6 +249,11 @@ class TestTaskRunners(unittest.TestCase):
         self.assertEqual(clustering_rec["status"], "SUCCESS")
         self.assertIn("clustering_recommendations", clustering_rec["reference"])
 
+        survival_rec = advisor.get_recommendation(profile, "SURVIVAL_ANALYSIS")
+        self.assertEqual(survival_rec["status"], "SUCCESS")
+        self.assertIn("lifelines", survival_rec["guidance"])
+        self.assertIn("survival_recommendations", survival_rec["reference"])
+
     def test_model_advisor_storage_path_uses_modeling_contracts(self):
         config = {
             "data": {

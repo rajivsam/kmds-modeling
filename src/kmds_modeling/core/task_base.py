@@ -7,11 +7,21 @@ import pandas as pd
 
 
 class BaseTaskRunner(ABC):
-    def __init__(self, config: Dict, path_coordinator, X: pd.DataFrame, y: pd.Series):
+    def __init__(
+        self,
+        config: Dict,
+        path_coordinator,
+        X: pd.DataFrame,
+        y: pd.Series = None,
+        durations: pd.Series = None,
+        event_observed: pd.Series = None,
+    ):
         self.config = config
         self.path_coordinator = path_coordinator
         self.X = X
         self.y = y
+        self.durations = durations
+        self.event_observed = event_observed
         self.custom_transformers = []
 
     def register_transformer(self, transformer):

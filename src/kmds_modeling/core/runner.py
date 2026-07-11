@@ -13,6 +13,7 @@ from .task_classification import ClassificationTaskRunner
 from .task_clustering import ClusteringTaskRunner
 from .task_graph import GraphTaskRunner
 from .task_regression import RegressionTaskRunner
+from .task_survival import SurvivalTaskRunner
 
 
 class ExperimentRunner:
@@ -22,6 +23,9 @@ class ExperimentRunner:
             self.config = yaml.safe_load(f)
 
         self.custom_transformers = []
+        self.task_type = self.config.get("project", {}).get("task_type")
+        self.durations = None
+        self.event_observed = None
         self._load_data()
 
     def _load_data(self):
@@ -38,9 +42,22 @@ class ExperimentRunner:
             else:
                 df.index.name = index_column
 
-        target = self.config["project"]["target_variable"]
-        self.y = df[target]
-        self.X = df.drop(columns=[target])
+        if self.task_type == "SURVIVAL_ANALYSIS":
+            project_cfg = self.config["project"]
+            duration_col = project_cfg.get("duration_variable")
+            event_col = project_cfg.get("event_variable")
+            if not duration_col or not event_col:
+                raise ValueError(
+                    "project.duration_variable and project.event_variable must be set for SURVIVAL_ANALYSIS."
+                )
+            self.durations = df[duration_col]
+            self.event_observed = df[event_col]
+            self.y = self.event_observed
+            self.X = df.drop(columns=[duration_col, event_col])
+        else:
+            target = self.config["project"]["target_variable"]
+            self.y = df[target]
+            self.X = df.drop(columns=[target])
 
     def register_transformer(self, transformer):
         self.custom_transformers.append(transformer)
@@ -57,6 +74,7 @@ class ExperimentRunner:
         task_map = {
             "TABULAR_CLASSIFICATION": ClassificationTaskRunner,
             "TABULAR_REGRESSION": RegressionTaskRunner,
+            "SURVIVAL_ANALYSIS": SurvivalTaskRunner,
             "GRAPH_NODE_CLASSIFICATION": GraphTaskRunner,
             "GRAPH_NODE_REGRESSION": GraphTaskRunner,
             "GRAPH_DISCOVERY": GraphTaskRunner,
@@ -72,6 +90,8 @@ class ExperimentRunner:
             path_coordinator=self.path_coordinator,
             X=self.X,
             y=self.y,
+            durations=self.durations,
+            event_observed=self.event_observed,
         )
 
     def _validate_task_type(self):

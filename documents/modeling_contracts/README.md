@@ -22,6 +22,7 @@ Point agents at this directory when you need task-specific KMDS modeling guidanc
 For a given task, use the corresponding file:
 - `TABULAR_CLASSIFICATION` → `tabular_classification_recommendations.md`
 - `TABULAR_REGRESSION` → `tabular_regression_recommendations.md`
+- `SURVIVAL_ANALYSIS` → `survival_recommendations.md`
 - `GRAPH_NODE_CLASSIFICATION`, `GRAPH_NODE_REGRESSION`, `GRAPH_DISCOVERY` → `graph_modeling_recommendations.md`
 - `CLUSTERING` → `clustering_recommendations.md`
 

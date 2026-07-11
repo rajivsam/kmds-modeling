@@ -41,10 +41,19 @@ It keeps path resolution generic and avoids hardcoded workspace layouts.
 - `TABULAR_REGRESSION` via `RegressionTaskRunner`
 
 Placeholder runners exist for:
+- `SURVIVAL_ANALYSIS`
 - `GRAPH_NODE_CLASSIFICATION`
 - `GRAPH_NODE_REGRESSION`
 - `GRAPH_DISCOVERY`
 - `CLUSTERING`
+
+### Survival Analysis
+`SURVIVAL_ANALYSIS` is an advisory-supported task type. It requires:
+- `project.duration_variable` for time-to-event duration
+- `project.event_variable` for censoring/event indicator
+- a survival-aware candidate interface such as `fit(X_train, durations, event_observed)`
+
+A package like `lifelines` is recommended to fit Kaplan-Meier curves and generate survival functions.
 
 ### Modeling Advisor
 A core capability of this package is the independent modeling advisor service.
