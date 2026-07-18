@@ -18,6 +18,12 @@ This repo provides a KMDS modeling runtime package that evaluates candidate mode
 - `src/kmds_modeling/core/runner.py`
 - `src/kmds_modeling/core/path_coordinator.py`
 
+## Context engineering setup
+- Use `PRODUCT.md`, `ARCHITECTURE.md`, and `CONTRIBUTING.md` to provide stable project context for AI workflows.
+- Use `plan-template.md` as the standard implementation plan structure.
+- Custom agents are defined in `.github/agents/plan.agent.md` and `.github/agents/implement.agent.md`.
+- Prompt files are defined in `.github/prompts/plan.prompt.md` and `.github/prompts/implement.prompt.md`.
+
 ## Instructions for Copilot
 - Keep runtime logic generic and workspace-agnostic.
 - Do not bundle workspace `documents/` artifacts into the installed package.
